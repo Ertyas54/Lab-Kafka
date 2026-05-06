@@ -43,9 +43,9 @@ services:
     image: postgres:15-alpine
     container_name: med-database
     environment:
-      POSTGRES_DB: medical_db
-      POSTGRES_USER: med_user
-      POSTGRES_PASSWORD: med_pass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -54,7 +54,7 @@ services:
     networks:
       - medical-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U med_user -d medical_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -69,7 +69,8 @@ services:
         condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      DATABASE_URL: postgresql://med_user:med_pass@database:5432/medical_db
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      KAFKA_GROUP_ID: ${KAFKA_GROUP_ID}
     ports:
       - "8081:8081"
     networks:
