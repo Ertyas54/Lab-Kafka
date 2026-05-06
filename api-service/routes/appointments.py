@@ -41,7 +41,8 @@ def create_appointment():
     }
 
     try:
-        metadata = send_appointment(payload)
+        key = data['insurance_number']
+        metadata = send_appointment(key, payload)
         logger.info(
             f"Appointment created: {data['first_name']} {data['last_name']} -> {data['doctor_last_name']}, offset: {metadata.offset}")
         return jsonify({
